@@ -1,25 +1,27 @@
 <?php
 
-//Read last survey
+//Read survey json
 $file = "last.json";
 $json = json_decode(file_get_contents($file), true);
 
+//Alternate A/B
+switch($json['last']) {
+    case 'A':
+        $json['last'] = 'B';
+        break;
 
-if($json['last'] == 'A') {
-    //Change 'last' and save file
-    $json['last'] = 'B';
-    file_put_contents($file, json_encode($json, true));
+    case 'B':
+        $json['last'] = 'A';
+        break;
 
-    //Redirect to A
-    echo "<meta http-equiv=\"refresh\" content=\"0;URL={$json['B']}\">";
+    default:
+        $json['last'] = 'A';
 }
-else if($json['last'] == 'B') {
-    //Change 'last' and save file
-    $json['last'] = 'A';
-    file_put_contents($file, json_encode($json, true));
 
-    //Redirect to B
-    echo "<meta http-equiv=\"refresh\" content=\"0;URL={$json['A']}\">";
-}
+//Save survey json
+file_put_contents($file, json_encode($json, true));
+
+//Redirect to survey
+echo "<meta http-equiv=\"refresh\" content=\"0;URL={$json[$json['last']]}\">";
 
 ?>
